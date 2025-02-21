@@ -1,0 +1,14 @@
+# .htaccess (placé dans le dossier "mon_projet")
+# Active mod_rewrite
+RewriteEngine On
+
+# Indique la base si le projet est dans un sous-dossier
+RewriteBase /site_web_corpus
+
+# Ignorer si le fichier physique existe
+RewriteCond %{REQUEST_FILENAME} !-f
+# Ignorer si le dossier physique existe
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# Réécrire tout vers index.php
+RewriteRule ^(.*)$ index.php [QSA,L]
