@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="SqlDialectMappings">
+    <file url="file://$PROJECT_DIR$/controllers/DiversControllers.php" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/models/Corpus.php" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/models/Correction.php" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/models/File.php" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/models/User.php" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/script.sql" dialect="MariaDB" />
+    <file url="PROJECT" dialect="MySQL" />
+  </component>
+</project>

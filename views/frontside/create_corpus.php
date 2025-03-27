@@ -1,6 +1,10 @@
 <?php
 session_start();
 
+require_once "../../config/Db.php";
+require_once "../../models/Corpus.php";
+require_once "../../controllers/CorpusController.php";
+
 // Vérifier si l'utilisateur est connecté
 if (!isset($_SESSION['user_id'])) {
     header("Location: login.php");
@@ -33,10 +37,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Si pas d'erreurs, insertion (simulation)
     if (empty($errors)) {
-        // TODO: Insérer dans la base de données
-        // Exemple:
-        // $stmt = $db->prepare("INSERT INTO corpora (title, description, language, created_by) VALUES (?, ?, ?, ?)");
-        // $stmt->execute([$title, $description, $language, $_SESSION['user_id']]);
+        $formData = [
+                'title' => $title,
+            'description' => $description,
+            'language' => $language,
+            'created_by' => $_SESSION['user_id']
+        ];
+        $corpusController = new CorpusController(Db::getConn());
+        $corpusController->store($formData);
 
         $successMessage = "Corpus created successfully!";
     }

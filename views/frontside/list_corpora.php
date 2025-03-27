@@ -1,30 +1,18 @@
 <?php
 session_start(); // Assurez-vous que la session est démarrée
+require_once "../../config/Db.php";
+require_once "../../models/Corpus.php";
+require_once "../../models/User.php";
+require_once "../../controllers/CorpusController.php";
+
+use \model\Corpus;
+use \model\User;
 
 // Set the page title
 $pageTitle = "Browse Corpora - Philomathos";
 
-// Example data (replace with actual DB query or function)
-$corpora = [
-    [
-        'title' => 'Old English Letters',
-        'description' => 'A collection of early medieval English texts.',
-        'created_at' => '2024-05-10',
-        'owner' => 'Dr. Brown'
-    ],
-    [
-        'title' => 'Latin Classical Documents',
-        'description' => 'Includes various classical Latin prose and poetry.',
-        'created_at' => '2024-06-02',
-        'owner' => 'Professor Rivera'
-    ],
-    [
-        'title' => 'French Renaissance Manuscripts',
-        'description' => '16th-century documents from the French Renaissance era.',
-        'created_at' => '2025-01-15',
-        'owner' => 'Ms. Bernard'
-    ],
-];
+
+$corpora = Corpus::findAll(Db::getConn());
 
 // Start output buffering to capture the page’s unique content
 ob_start();
@@ -60,29 +48,37 @@ ob_start();
                 <?php foreach ($corpora as $corpus): ?>
                     <tr class="border-b">
                         <td class="px-4 py-2 text-gray-800 font-medium">
-                            <a href="edit_corpus.php?title=<?php echo urlencode($corpus['title']); ?>" class="hover:underline">
-                                <?php echo htmlspecialchars($corpus['title']); ?>
+                            <a href="view_corpus.php?id=<?php echo urlencode($corpus->getId()); ?>"
+                               class="hover:underline">
+                                <?php echo htmlspecialchars($corpus->getTitle()); ?>
                             </a>
                         </td>
                         <td class="px-4 py-2 text-gray-700">
-                            <?php echo htmlspecialchars($corpus['description']); ?>
+                            <?php echo htmlspecialchars($corpus->getDescription()); ?>
                         </td>
                         <td class="px-4 py-2 text-gray-700">
-                            <?php echo date('M j, Y', strtotime($corpus['created_at'])); ?>
+                            <?php echo date('M j, Y', strtotime($corpus->getCreatedAt())); ?>
                         </td>
                         <td class="px-4 py-2 text-gray-700">
-                            <?php echo htmlspecialchars($corpus['owner']); ?>
+                            <?php echo htmlspecialchars(User::findById(Db::getConn(), $corpus->getCreatedBy())->getUsername()); ?>
                         </td>
                         <td class="px-4 py-2">
-                            <a href="edit_corpus.php?title=<?php echo urlencode($corpus['title']); ?>"
+                            <?php if (isset($_SESSION['user_id']) && $_SESSION['user_id'] == $corpus->getCreatedBy()): ?>
+                                <a href="edit_corpus.php?id=<?php echo urlencode($corpus->getId()); ?>"
+                                   class="text-blue-600 hover:underline mr-2">
+                                    Edit
+                                </a>
+                                <a href="delete_corpus.php?id=<?php echo urlencode($corpus->getId()); ?>"
+                                   class="text-red-600 hover:underline"
+                                   onclick="return confirm('Are you sure you want to delete this corpus?');">
+                                    Delete
+                                </a>
+                            <?php endif; ?>
+                            <a href="view_corpus.php?id=<?php echo urlencode($corpus->getId()); ?>"
                                class="text-blue-600 hover:underline mr-2">
-                                Edit
+                                View
                             </a>
-                            <a href="delete_corpus.php?title=<?php echo urlencode($corpus['title']); ?>"
-                               class="text-red-600 hover:underline"
-                               onclick="return confirm('Are you sure you want to delete this corpus?');">
-                                Delete
-                            </a>
+
                         </td>
                     </tr>
                 <?php endforeach; ?>

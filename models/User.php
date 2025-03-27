@@ -1,28 +1,15 @@
 <?php
 
-class User
+namespace model;
+
+use Exception;
+
+require_once __DIR__."/Model.php";
+
+class User extends Model
 {
-    public mixed $id {
-        get {
-            return $this->id;
-        }
-    }
-    public mixed $username {
-        get {
-            return $this->username;
-        }
-        set {
-            $this->username = $value;
-        }
-    }
-    public mixed $email {
-        get {
-            return $this->email;
-        }
-        set {
-            $this->email = $value;
-        }
-    }
+    private mixed $username;
+    private mixed $email;
     private mixed $role;           // e.g. 'admin', 'user'
     private mixed $passwordHash;   // stocke le mot de passe haché
     private mixed $createdAt;      // datetime
@@ -38,6 +25,7 @@ class User
         $id = null,
         $createdAt = null
     ) {
+        parent::__construct($id);
         $this->username = $username;
         $this->email = $email;
         $this->role = $role;
@@ -180,9 +168,9 @@ class User
      */
     public static function findByEmail($pdo, $email): ?User
     {
-        $sql = "SELECT * FROM users WHERE email = :email";
+        $sql = "SELECT * FROM users WHERE email = ?";
         $stmt = $pdo->prepare($sql);
-        $stmt->bindValue(':email', $email);
+        $stmt->bindValue(1, $email);
         $stmt->execute();
 
         $row = $stmt->fetch(\PDO::FETCH_ASSOC);
@@ -220,4 +208,25 @@ class User
         }
         return $results;
     }
+
+    public function getUsername(): mixed
+    {
+        return $this->username;
+    }
+
+    public function setUsername(mixed $username): void
+    {
+        $this->username = $username;
+    }
+
+    public function getEmail(): mixed
+    {
+        return $this->email;
+    }
+
+    public function setEmail(mixed $email): void
+    {
+        $this->email = $email;
+    }
+
 }

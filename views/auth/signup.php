@@ -1,5 +1,6 @@
 <?php
 session_start();
+require_once '../../controllers/UserController.php';
 
 $pageTitle = "Sign Up - Philomathos";
 
@@ -15,27 +16,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email    = trim($_POST['email'] ?? '');
     $password = $_POST['password'] ?? '';
 
-    // Validations basiques
-    if (empty($username)) {
-        $errors[] = "Username is required.";
-    }
-    if (empty($email)) {
-        $errors[] = "Email is required.";
-    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        $errors[] = "Invalid email format.";
-    }
-    if (empty($password)) {
-        $errors[] = "Password is required.";
-    } elseif (strlen($password) < 6) {
-        $errors[] = "Password must be at least 6 characters long.";
-    }
-
     // Si pas d'erreurs, on simule l'enregistrement
     if (empty($errors)) {
-        // TODO : Insert dans ta base de données
-        // e.g. $stmt = $db->prepare("INSERT INTO users (username, email, password) VALUES (?, ?, ?)");
-        // $stmt->execute([$username, $email, password_hash($password, PASSWORD_DEFAULT)]);
+        $userController = new UserController(Db::getConn());
+        $result = $userController->store(['username' => $username, 'email' => $email, 'password' => $password]);
+         if (in_array('errors', $result)) {
+             $errors = $result;
+         }
 
+        header("Refresh: 5; url=../../index.php");
         $successMessage = "Your account has been created successfully! You can now log in.";
     }
 }

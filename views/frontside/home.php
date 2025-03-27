@@ -1,6 +1,6 @@
 <?php
 // home.php
-
+session_start();
 $pageTitle = "Home - Philomathos";
 
 // Crée du contenu HTML (ou includes, etc.)
@@ -43,6 +43,7 @@ ob_start();  // on démarre un buffer
 
     </section>
 
+    <?php if (!isset($_SESSION['user_id'])):?>
     <!-- Call to Action -->
     <section class="max-w-6xl mx-auto my-12 p-6 bg-blue-600 text-white rounded-lg text-center">
         <h2 class="text-2xl font-semibold">Get Started Today</h2>
@@ -55,6 +56,7 @@ ob_start();  // on démarre un buffer
     </section>
 
 <?php
+    endif;
 $content = ob_get_clean(); // récupère tout le HTML généré
 
 // On inclut le layout principal

@@ -1,0 +1,5 @@
+# Environment variables
+.env
+images
+queue/queue.json
+logs/app.log

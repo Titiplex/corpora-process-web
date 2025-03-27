@@ -1,7 +1,9 @@
 <?php
 
+use model\User;
+
 require_once __DIR__ . '/../models/User.php';      // Le modèle User
-require_once __DIR__ . '/../config/database.php';  // Suppose qu'on y déclare $pdo
+require_once __DIR__ . '/../config/Db.php';  // Suppose qu'on y déclare $pdo
 
 class UserController
 {
@@ -26,7 +28,7 @@ class UserController
 
     /**
      * Store - Crée un nouvel utilisateur en base
-     * @param array $formData : $_POST contenant username, email, password, role
+     * @param array $formData : $_POST contenant => username, email, password, role
      */
     public function store(array $formData): array
     {
@@ -54,7 +56,7 @@ class UserController
         }
 
         if (!empty($errors)) {
-            return ['error' => $errors];
+            return ['errors' => $errors];
         }
 
         // Hacher le mot de passe
@@ -64,7 +66,7 @@ class UserController
         $user = new User($username, $email, $role, $hashedPassword);
         $user->create($this->pdo);
 
-        return ['success' => true, 'userId' => $user->id];
+        return ['success' => true, 'userId' => $user->getId()];
     }
 
     /**
@@ -99,8 +101,8 @@ class UserController
         $errors = [];
 
         // Récupération des nouvelles valeurs
-        $username = trim($formData['username'] ?? $user->username);
-        $email = trim($formData['email'] ?? $user->email);
+        $username = trim($formData['username'] ?? $user->getUsername());
+        $email = trim($formData['email'] ?? $user->getEmail());
         $role = $formData['role'] ?? $user->getRole();
 
         // Optionnel : On ne force pas un nouveau password si ce n'est pas fourni
@@ -129,7 +131,7 @@ class UserController
 
         // Vérifier si l'email n'est pas utilisé par un autre utilisateur
         $existing = User::findByEmail($this->pdo, $email);
-        if ($existing && $existing->id !== $id) {
+        if ($existing && $existing->getId() !== $id) {
             $errors[] = "Email is already taken by another user.";
         }
 
@@ -138,8 +140,8 @@ class UserController
         }
 
         // Mettre à jour les champs dans l'objet
-        $user->username = $username;
-        $user->email = $email;
+        $user->setUsername($username);
+        $user->setEmail($email);
         $user->setRole($role);
         $user->setPasswordHash($hashedPassword);
 

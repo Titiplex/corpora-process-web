@@ -1,74 +1,30 @@
 <?php
 
 // Exemple de namespace si souhaité :
-// namespace App\Models;
+namespace model;
 
-class Corpus
+use Exception;
+
+require_once __DIR__."/Model.php";
+
+class Corpus extends Model
 {
     // Propriétés privées
-    private mixed $id {
-        get {
-            return $this->id;
-        }
-    }
-    private mixed $title {
-        get {
-            return $this->title;
-        }
-        set {
-            $this->title = $value;
-        }
-    }
-    private mixed $description {
-        get {
-            return $this->description;
-        }
-        set {
-            $this->description = $value;
-        }
-    }
-    private mixed $language {
-        get {
-            return $this->language;
-        }
-        set {
-            $this->language = $value;
-        }
-    }
+    private mixed $title;
+    private mixed $description;
+    private mixed $language;
     private mixed $created_by;  // id de l'utilisateur / auteur
     private mixed $created_at;  // datetime
 
     // Constructeur
     public function __construct($title, $description, $language, $created_by = null, $id = null, $created_at = null)
     {
+        parent::__construct($id);
         $this->title = $title;
         $this->description = $description;
         $this->language = $language;
         $this->created_by = $created_by;
-        $this->id = $id;
         $this->created_at = $created_at;
-    }
-
-    // --------------------
-    // Getters & Setters
-    // --------------------
-
-    public function getCreatedBy()
-    {
-        return $this->created_by;
-    }
-    public function setCreatedBy($userId): void
-    {
-        $this->created_by = $userId;
-    }
-
-    public function getCreatedAt()
-    {
-        return $this->created_at;
-    }
-    public function setCreatedAt($datetime): void
-    {
-        $this->created_at = $datetime;
     }
 
     // --------------------
@@ -80,7 +36,7 @@ class Corpus
      */
     public function create($pdo): void
     {
-        // $pdo est une instance de PDO, fournie par ex. depuis config/database.php
+        // $pdo est une instance de PDO, fournie par ex. depuis config/Db.php
         $sql = "INSERT INTO corpora (title, description, language, created_by, created_at) 
                 VALUES (:title, :description, :language, :created_by, :created_at)";
 
@@ -191,4 +147,56 @@ class Corpus
         }
         return $results;
     }
+
+    public function getTitle(): mixed
+    {
+        return $this->title;
+    }
+
+    public function setTitle(mixed $title): void
+    {
+        $this->title = $title;
+    }
+
+    public function getDescription(): mixed
+    {
+        return $this->description;
+    }
+
+    public function setDescription(mixed $description): void
+    {
+        $this->description = $description;
+    }
+
+    public function getLanguage(): mixed
+    {
+        return $this->language;
+    }
+
+    public function setLanguage(mixed $language): void
+    {
+        $this->language = $language;
+    }
+
+    public function getCreatedBy(): mixed
+    {
+        return $this->created_by;
+    }
+
+    public function setCreatedBy(mixed $created_by): void
+    {
+        $this->created_by = $created_by;
+    }
+
+    public function getCreatedAt(): mixed
+    {
+        return $this->created_at;
+    }
+
+    public function setCreatedAt(mixed $created_at): void
+    {
+        $this->created_at = $created_at;
+    }
+
+
 }

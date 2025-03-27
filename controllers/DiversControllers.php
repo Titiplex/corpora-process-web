@@ -1,6 +1,6 @@
 <?php
 
-require_once __DIR__ . '/../config/database.php';   // Suppose qu'on y déclare $pdo
+require_once __DIR__ . '/../config/Db.php';   // Suppose qu'on y déclare $pdo
 require_once __DIR__ . '/../models/Corpus.php';     // Ex. pour la recherche
 require_once __DIR__ . '/../models/User.php';       // Ex. pour la recherche
 
@@ -34,7 +34,7 @@ class DiversController
 
         // Recherche dans les corpus ?
         if ($scope === 'all' || $scope === 'corpus') {
-            // Ex. : SELECT * FROM corpora WHERE title LIKE ...
+            // Ex. SELECT * FROM corpora WHERE title LIKE ...
             $sql = "SELECT * FROM corpora 
                     WHERE title LIKE :q OR description LIKE :q
                     ORDER BY created_at DESC";

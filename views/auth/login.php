@@ -1,5 +1,9 @@
 <?php
 session_start();
+require_once '../../models/User.php';
+require_once '../../config/Db.php';
+
+use \model\User;
 
 $pageTitle = "Login - Philomathos";
 
@@ -24,31 +28,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if (empty($errors)) {
-        // TODO: Récupérer l'utilisateur en base de données
-        // Exemple:
-        // $stmt = $db->prepare("SELECT * FROM users WHERE email = ?");
-        // $stmt->execute([$email]);
-        // $user = $stmt->fetch();
-
-        // SIMULATION pour la démo:
-        $mockUser = [
-            'id' => 123,
-            'email' => 'test@example.com',
-            // password_hash('secret', PASSWORD_DEFAULT) => example
-            'hashed_pass' => '$2y$10$2PBb8/PJySPzK5On9KIaje2ALf8fU14jZvefd.eT5lsy68R8pPE.6',
-            'username' => 'TestUser'
-        ];
+        $dbUser = User::findByEmail(Db::getConn(), $email);
 
         // Vérifier si l'utilisateur existe (email) et le mot de passe
-        if ($email === $mockUser['email']) {
+        if ($dbUser && $email === $dbUser->getEmail()) {
             // Vérifier le mot de passe
-            if (password_verify($password, $mockUser['hashed_pass'])) {
-                // Connexion réussie => stocker en session
-                $_SESSION['user_id'] = $mockUser['id'];
-                $_SESSION['username'] = $mockUser['username'];
+            if (password_verify($password, $dbUser->getPasswordHash())) {
+                // Connexion réussie → stocker en session
+                $_SESSION['user_id'] = $dbUser->getId();
+                $_SESSION['username'] = $dbUser->getUsername();
 
                 // Optionnel: redirection
-                header('Location: home.php');
+                header('Location: ../../index.php');
                 exit;
             } else {
                 $errors[] = "Incorrect password.";
